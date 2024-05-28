@@ -9,7 +9,7 @@
 To install Ways, you can use npm:
 
 ```bash
-npm install -g ways
+npm install -g ways-generator
 ```
 
 ## Usage
