@@ -1,6 +1,6 @@
 {
   "name": "ways-generator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A simple CLI tool for generating project structure",
   "keywords": [
     "CLI",
@@ -23,7 +23,7 @@
     "url": "git+https://github.com/wmgdevelop/ways.git"
   },
   "license": "MIT",
-  "author": "Willian Magalhães Gonçalves <wmgdevelop",
+  "author": "Willian Magalhães Gonçalves <wmgdevelop@gmail.com>",
   "main": "dist/index.js",
   "bin": {
     "ways": "dist/index.js"
