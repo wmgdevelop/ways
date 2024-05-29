@@ -70,8 +70,7 @@ async function buildTemplate({ template, destiny, options }) {
         const fileContent = await promises_1.default.readFile(filePath, 'utf-8');
         const isExistingFilePath = (0, node_fs_1.existsSync)(destinyPath);
         if (isExistingFilePath) {
-            (0, log_service_1.logWarning)(`File ${destinyPath} already exists`);
-            return;
+            (0, log_service_1.logWarning)(`File ${destinyPath} was overwritten!`);
         }
         const newFileContent = fileContent.replace(/__(.*?)__/g, (_, key) => newOptions[key]);
         await createFile(destinyPath, newFileContent);
@@ -115,15 +114,12 @@ exports.getWaysJson = getWaysJson;
 async function createDirectory(dirPath) {
     const isExistingDir = (0, node_fs_1.existsSync)(dirPath);
     if (!isExistingDir) {
-        await promises_1.default.mkdir(dirPath);
+        await promises_1.default.mkdir(dirPath, { recursive: true });
     }
 }
 exports.createDirectory = createDirectory;
 async function createFile(filePath, content) {
-    const isExistingFile = (0, node_fs_1.existsSync)(filePath);
-    if (!isExistingFile) {
-        await promises_1.default.writeFile(filePath, content);
-    }
+    await promises_1.default.writeFile(filePath, content);
 }
 exports.createFile = createFile;
 function getPath(...paths) {

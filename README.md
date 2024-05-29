@@ -71,7 +71,7 @@ class __MyVariableCamelCase__ {
 
 ```python
 # Python
-class __my_variable_snake_case__:
+class __myVariableSnakeCase__:
     def __init__(self):
         pass
 ```

@@ -77,8 +77,7 @@ export async function buildTemplate({ template, destiny, options }: UseTemplateP
     const fileContent = await fs.readFile(filePath, 'utf-8');
     const isExistingFilePath = existsSync(destinyPath);
     if (isExistingFilePath) {
-      logWarning(`File ${destinyPath} already exists`)
-      return;
+      logWarning(`File ${destinyPath} was overwritten!`)
     }
     const newFileContent = fileContent.replace(/__(.*?)__/g, (_, key) => newOptions[key]);
     await createFile(destinyPath, newFileContent);
@@ -122,15 +121,12 @@ export async function getWaysJson(): Promise<WaysJsonEntity> {
 export async function createDirectory(dirPath: string) {
   const isExistingDir = existsSync(dirPath);
   if (!isExistingDir) {
-    await fs.mkdir(dirPath);
+    await fs.mkdir(dirPath, { recursive: true });
   }
 }
 
 export async function createFile(filePath: string, content: string) {
-  const isExistingFile = existsSync(filePath);
-  if (!isExistingFile) {
-    await fs.writeFile(filePath, content);
-  }
+  await fs.writeFile(filePath, content);
 }
 
 export function getPath(...paths: string[]): string {
