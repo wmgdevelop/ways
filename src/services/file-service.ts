@@ -48,6 +48,8 @@ export async function buildTemplate({ template, destiny, options }: UseTemplateP
   const templatePath = getTemplatePath();
   const fileNames = await fs.readdir(templatePath);
 
+  createDirectory(destiny);
+
   for (const fileName of fileNames) {
     const newFileName = fileName.replace(/\[(.*?)\]/, (_, key) => newOptions[key]);
     const filePath = getPath(templatePath, fileName);

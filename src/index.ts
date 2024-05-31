@@ -22,4 +22,10 @@ program
   .description('Build project')
   .action(buildCommand);
 
-program.parse(process.argv);
+const isMainModule = require.main === module;
+
+if (isMainModule) {
+  program.parse(process.argv);
+}
+
+export { program };

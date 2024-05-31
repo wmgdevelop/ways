@@ -3,35 +3,36 @@ import os from 'os';
 import { logError } from './log-service';
 
 const isWindows = os.platform() === 'win32';
-const isLunix = os.platform() === 'linux';
+const isUnixLike = os.platform() === 'linux' || os.platform() === 'darwin';
 
 type RunCommandOptions = {
   cwd?: string;
   silent?: boolean;
 }
 
-export async function runCommand(command: string, options: RunCommandOptions): Promise<string> {
+export async function runCommand(command: string, options: RunCommandOptions = {}): Promise<string> {
   handleCommand();
-  return new Promise((resolve, _) => {
+  return new Promise((resolve, reject) => {
     exec(command, options, onRunCommand);
 
-    function onRunCommand(error: any, stdout: string | PromiseLike<string>, stderr: any) {
+    function onRunCommand(error: any, stdout: string, stderr: string) {
       if (error) {
-        return logError(error);
+        logError(error);
+        return reject(error);
       }
       if (stderr) {
-        return logError(stderr);
+        logError(stderr);
+        return reject(stderr);
       }
       resolve(stdout);
-    };
+    }
   });
 
   function handleCommand() {
     if (options.silent) {
       if (isWindows) {
         command = `${command} >nul 2>&1`;
-      }
-      if (isLunix) {
+      } else if (isUnixLike) {
         command = `${command} >/dev/null 2>&1`;
       }
     }
