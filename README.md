@@ -1,8 +1,5 @@
 # ways-generator
 
-[![Test Status](https://github.com/wmgdevelop/ways/workflows/CI/badge.svg)](https://github.com/wmgdevelop/ways/actions)
-
-
 O `ways-generator` é um pacote npm global que facilita a criação de arquivos e pastas baseados em templates. Este guia irá te ajudar a configurar e usar o `ways-generator` de forma simples e prática.
 
 ## Instalação
