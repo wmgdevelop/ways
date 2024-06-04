@@ -10,7 +10,8 @@ import { WaysJsonEntity } from '../../src/entities/ways-json-entity';
 import { waitBuildTemplate } from '../test-helper';
 
 describe('buildCommand', () => {
-  const tempProjectPath = path.resolve(__dirname, 'temp-project-build');
+  const dirName = _getDirName();
+  const tempProjectPath = path.resolve(dirName, 'temp-project-build');
   const waysJsonPath = path.resolve(tempProjectPath, 'ways.json');
   let cwdSpy: jest.SpyInstance;
   let logSpy: jest.SpyInstance;
@@ -165,7 +166,7 @@ describe('buildCommand', () => {
         const isGlobalWaysJson = normalizedFilePath === normalizedGlobalWaysJsonPath;
         if (isGlobalWaysJson) {
           return Promise.resolve(JSON.stringify({
-            templatesPath: path.resolve(__dirname, '../templates'),
+            templatesPath: path.resolve(dirName, '../templates'),
           }));
         }
         return originalReadFile(filePath, ...args);
