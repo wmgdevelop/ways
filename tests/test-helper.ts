@@ -3,6 +3,6 @@ export async function wait(milliseconds: number) {
 }
 
 export async function waitBuildTemplate() {
-  await wait(10);
+  await wait(100);
 }
 

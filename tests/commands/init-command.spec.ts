@@ -5,20 +5,19 @@ import { initCommand } from '../../src/commands/init-command';
 import { waitBuildTemplate } from '../test-helper';
 
 describe('initCommand', () => {
-  const tempProjectPath = path.resolve(__dirname, 'temp-project');
+  const tempProjectPath = path.resolve(__dirname, 'temp-project-init');
   const waysJsonPath = path.resolve(tempProjectPath, 'ways.json');
   let cwdSpy: jest.SpyInstance;
   let logSpy: jest.SpyInstance;
 
   beforeEach(async () => {
-    jest.clearAllMocks();
     cwdSpy = jest.spyOn(process, 'cwd').mockReturnValue(tempProjectPath);
     logSpy = jest.spyOn(console, 'log').mockImplementation();
     await rimraf(tempProjectPath);
   });
 
   afterEach(async () => {
-    cwdSpy.mockRestore();
+    jest.restoreAllMocks();
     await rimraf(tempProjectPath);
   });
 

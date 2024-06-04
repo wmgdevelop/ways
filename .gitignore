@@ -1,2 +1,4 @@
 node_modules/
 coverage/
+tests/commands/temp-project-init/
+tests/commands/temp-project-build/

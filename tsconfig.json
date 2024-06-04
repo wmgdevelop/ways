@@ -11,9 +11,12 @@
   },
   "include": [
     "src/**/*.ts",
-    "tests/**/*.ts"
+    "tests/**/*.ts",
+    "tests/commands/init-command.spec.ts.skip"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "templates",
+    "tests/templates"
   ]
 }
