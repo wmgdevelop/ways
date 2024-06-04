@@ -162,8 +162,7 @@ describe('buildCommand', () => {
     function _getGlobalWaysJsonStub() {
       return jest.spyOn(fs, 'readFile').mockImplementation((filePath, ...args) => {
         const normalizedFilePath = path.normalize(`${filePath}`);
-        const normalizedGlobalWaysJsonPath = path.normalize(`${globalWaysJsonPath}`);
-        const isGlobalWaysJson = normalizedFilePath === normalizedGlobalWaysJsonPath;
+        const isGlobalWaysJson = /\.ways\.json$/.test(`${normalizedFilePath}`)
         if (isGlobalWaysJson) {
           return Promise.resolve(JSON.stringify({
             templatesPath: path.resolve(dirName, '../templates'),
