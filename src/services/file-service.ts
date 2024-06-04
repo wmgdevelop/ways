@@ -65,14 +65,23 @@ export async function buildTemplate({ template, destiny, options }: UseTemplateP
     }
   }
 
+  function getDirName() {
+    const githubWorkspace = process.env.GITHUB_WORKSPACE;
+    if (githubWorkspace) {
+      return path.resolve(githubWorkspace, 'src/services');
+    }
+    return __dirname;
+  }
+
   function getTemplatePath() {
+    const dirName = getDirName();
     const generalTemplatesPath = generalWaysConfig?.templatesPath;
     const generalTemplatePath = generalTemplatesPath ? getPath(generalTemplatesPath, template) : null;
     const isGeneralTemplatePathExisting = !!generalTemplatePath && existsSync(generalTemplatePath);
     if (isGeneralTemplatePathExisting) {
       return generalTemplatePath;
     }
-    return getPath(__dirname, `../../templates/${template}`);
+    return getPath(dirName, `../../templates/${template}`);
   }
 
   async function handleFile(filePath: string, destinyPath: string) {

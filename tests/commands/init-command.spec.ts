@@ -5,7 +5,8 @@ import { initCommand } from '../../src/commands/init-command';
 import { waitBuildTemplate } from '../test-helper';
 
 describe('initCommand', () => {
-  const tempProjectPath = path.resolve(__dirname, 'temp-project-init');
+  const dirName = _getDirName();
+  const tempProjectPath = path.resolve(dirName, 'temp-project-init');
   const waysJsonPath = path.resolve(tempProjectPath, 'ways.json');
   let cwdSpy: jest.SpyInstance;
   let logSpy: jest.SpyInstance;
@@ -44,4 +45,12 @@ describe('initCommand', () => {
     expect(logSpy.mock.calls.length).toBe(5);
     expect(logSpy.mock.calls[4][0]).toContain('ways.json was overwritten!');
   });
+
+  function _getDirName() {
+    const githubWorkspace = process.env.GITHUB_WORKSPACE;
+    if (githubWorkspace) {
+      return path.resolve(githubWorkspace, 'tests/commands');
+    }
+    return __dirname;
+  }
 });

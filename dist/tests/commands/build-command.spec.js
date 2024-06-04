@@ -7,6 +7,7 @@ const node_fs_1 = require("node:fs");
 const promises_1 = __importDefault(require("node:fs/promises"));
 const node_os_1 = __importDefault(require("node:os"));
 const node_path_1 = __importDefault(require("node:path"));
+const node_process_1 = __importDefault(require("node:process"));
 const rimraf_1 = require("rimraf");
 const build_command_1 = require("../../src/commands/build-command");
 const init_command_1 = require("../../src/commands/init-command");
@@ -17,7 +18,7 @@ describe('buildCommand', () => {
     let cwdSpy;
     let logSpy;
     beforeEach(async () => {
-        cwdSpy = jest.spyOn(process, 'cwd').mockReturnValue(tempProjectPath);
+        cwdSpy = jest.spyOn(node_process_1.default, 'cwd').mockReturnValue(tempProjectPath);
         logSpy = jest.spyOn(console, 'log').mockImplementation();
         await (0, rimraf_1.rimraf)(tempProjectPath);
     });
@@ -162,4 +163,11 @@ describe('buildCommand', () => {
             });
         }
     });
+    function _getDirName() {
+        const githubWorkspace = node_process_1.default.env.GITHUB_WORKSPACE;
+        if (githubWorkspace) {
+            return node_path_1.default.resolve(githubWorkspace, 'tests/commands');
+        }
+        return __dirname;
+    }
 });
