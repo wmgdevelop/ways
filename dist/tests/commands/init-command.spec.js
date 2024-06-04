@@ -9,18 +9,17 @@ const rimraf_1 = require("rimraf");
 const init_command_1 = require("../../src/commands/init-command");
 const test_helper_1 = require("../test-helper");
 describe('initCommand', () => {
-    const tempProjectPath = node_path_1.default.resolve(__dirname, 'temp-project');
+    const tempProjectPath = node_path_1.default.resolve(__dirname, 'temp-project-init');
     const waysJsonPath = node_path_1.default.resolve(tempProjectPath, 'ways.json');
     let cwdSpy;
     let logSpy;
     beforeEach(async () => {
-        jest.clearAllMocks();
         cwdSpy = jest.spyOn(process, 'cwd').mockReturnValue(tempProjectPath);
         logSpy = jest.spyOn(console, 'log').mockImplementation();
         await (0, rimraf_1.rimraf)(tempProjectPath);
     });
     afterEach(async () => {
-        cwdSpy.mockRestore();
+        jest.restoreAllMocks();
         await (0, rimraf_1.rimraf)(tempProjectPath);
     });
     it('should initialize project creating way.json', async () => {

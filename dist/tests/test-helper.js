@@ -6,6 +6,6 @@ async function wait(milliseconds) {
 }
 exports.wait = wait;
 async function waitBuildTemplate() {
-    await wait(10);
+    await wait(100);
 }
 exports.waitBuildTemplate = waitBuildTemplate;

@@ -1,0 +1,12 @@
+[
+  {
+    "templates": [
+      "hello"
+    ],
+    "options": [
+      {
+        "name": "world"
+      }
+    ]
+  }
+]
