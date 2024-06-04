@@ -1,4 +1,4 @@
-import { existsSync } from 'node:fs';
+import fsSync from 'node:fs';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
@@ -8,6 +8,11 @@ import { buildCommand } from '../../src/commands/build-command';
 import { initCommand } from '../../src/commands/init-command';
 import { WaysJsonEntity } from '../../src/entities/ways-json-entity';
 import { waitBuildTemplate } from '../test-helper';
+
+jest.mock('node:fs', () => ({
+  ...jest.requireActual('node:fs'),
+  existsSync: jest.fn(),
+}));
 
 describe('buildCommand', () => {
   const dirName = _getDirName();
@@ -19,6 +24,13 @@ describe('buildCommand', () => {
   beforeEach(async () => {
     cwdSpy = jest.spyOn(process, 'cwd').mockReturnValue(tempProjectPath);
     logSpy = jest.spyOn(console, 'log').mockImplementation();
+    (fsSync.existsSync as jest.Mock).mockImplementation((path: string) => {
+      const isGlobalWaysJson = /\.ways\.json$/.test(path);
+      if (isGlobalWaysJson) {
+        return true;
+      }
+      return jest.requireActual('node:fs').existsSync(path);
+    });
     await rimraf(tempProjectPath);
   });
 
@@ -63,7 +75,7 @@ describe('buildCommand', () => {
       await buildCommand();
       await waitBuildTemplate();
       const indexTsPath = path.resolve(tempProjectPath, 'index.ts');
-      const isExistingIndexFile = existsSync(indexTsPath);
+      const isExistingIndexFile = fsSync.existsSync(indexTsPath);
       expect(isExistingIndexFile).toBeTruthy();
       const indexFileContent = await fs.readFile(indexTsPath, 'utf-8');
       expect(indexFileContent).toContain('My simple custom template: myValue');
@@ -78,12 +90,12 @@ describe('buildCommand', () => {
       await buildCommand();
       await waitBuildTemplate();
       const myModuleEntityPath = path.resolve(tempProjectPath, 'src/entities/my-module-entity.ts');
-      const isExistingEntityFile = existsSync(myModuleEntityPath);
+      const isExistingEntityFile = fsSync.existsSync(myModuleEntityPath);
       expect(isExistingEntityFile).toBeTruthy();
       const myModuleEntityContent = await fs.readFile(myModuleEntityPath, 'utf-8');
       expect(myModuleEntityContent).toContain('export class MyModuleEntity {');
       const myModuleRepositoryPath = path.resolve(tempProjectPath, 'src/repositories/my-module-repository.ts');
-      const isExistingRepositoryFile = existsSync(myModuleRepositoryPath);
+      const isExistingRepositoryFile = fsSync.existsSync(myModuleRepositoryPath);
       expect(isExistingRepositoryFile).toBeTruthy();
       const myModuleRepositoryContent = await fs.readFile(myModuleRepositoryPath, 'utf-8');
       expect(myModuleRepositoryContent).toContain('export interface MyModuleRepository {');
@@ -102,17 +114,17 @@ describe('buildCommand', () => {
       await buildCommand();
       await waitBuildTemplate();
       const userProfileEntityPath = path.resolve(tempProjectPath, 'src/entities/user-profile-entity.ts');
-      const isExistingUserProfileEntityFile = existsSync(userProfileEntityPath);
+      const isExistingUserProfileEntityFile = fsSync.existsSync(userProfileEntityPath);
       expect(isExistingUserProfileEntityFile).toBeTruthy();
       const userProfileEntityContent = await fs.readFile(userProfileEntityPath, 'utf-8');
       expect(userProfileEntityContent).toContain('export class UserProfileEntity {');
       const postCommentEntityPath = path.resolve(tempProjectPath, 'src/entities/post-comment-entity.ts');
-      const isExistingPostCommentEntityFile = existsSync(postCommentEntityPath);
+      const isExistingPostCommentEntityFile = fsSync.existsSync(postCommentEntityPath);
       expect(isExistingPostCommentEntityFile).toBeTruthy();
       const postCommentEntityContent = await fs.readFile(postCommentEntityPath, 'utf-8');
       expect(postCommentEntityContent).toContain('export class PostCommentEntity {');
       const purchaseOrderEntityPath = path.resolve(tempProjectPath, 'src/entities/purchase-order-entity.ts');
-      const isExistingPurchaseOrderEntityFile = existsSync(purchaseOrderEntityPath);
+      const isExistingPurchaseOrderEntityFile = fsSync.existsSync(purchaseOrderEntityPath);
       expect(isExistingPurchaseOrderEntityFile).toBeTruthy();
       const purchaseOrderEntityContent = await fs.readFile(purchaseOrderEntityPath, 'utf-8');
       expect(purchaseOrderEntityContent).toContain('export class PurchaseOrderEntity {');
@@ -130,29 +142,29 @@ describe('buildCommand', () => {
       await buildCommand();
       await waitBuildTemplate();
       const notificationSettingsEntityPath = path.resolve(tempProjectPath, 'src/entities/notification-settings-entity.ts');
-      const isExistingNotificationSettingsEntityFile = existsSync(notificationSettingsEntityPath);
+      const isExistingNotificationSettingsEntityFile = fsSync.existsSync(notificationSettingsEntityPath);
       expect(isExistingNotificationSettingsEntityFile).toBeTruthy();
       const notificationSettingsEntityContent = await fs.readFile(notificationSettingsEntityPath, 'utf-8');
       expect(notificationSettingsEntityContent).toContain('export class NotificationSettingsEntity {');
       const productCategoryEntityPath = path.resolve(tempProjectPath, 'src/entities/product-category-entity.ts');
-      const isExistingProductCategoryEntityFile = existsSync(productCategoryEntityPath);
+      const isExistingProductCategoryEntityFile = fsSync.existsSync(productCategoryEntityPath);
       expect(isExistingProductCategoryEntityFile).toBeTruthy();
       const productCategoryEntityContent = await fs.readFile(productCategoryEntityPath, 'utf-8');
       expect(productCategoryEntityContent).toContain('export class ProductCategoryEntity {');
       const notificationSettingsRepositoryPath = path.resolve(tempProjectPath, 'src/repositories/notification-settings-repository.ts');
-      const isExistingNotificationSettingsRepositoryFile = existsSync(notificationSettingsRepositoryPath);
+      const isExistingNotificationSettingsRepositoryFile = fsSync.existsSync(notificationSettingsRepositoryPath);
       expect(isExistingNotificationSettingsRepositoryFile).toBeTruthy();
       const notificationSettingsRepositoryContent = await fs.readFile(notificationSettingsRepositoryPath, 'utf-8');
       expect(notificationSettingsRepositoryContent).toContain('export interface NotificationSettingsRepository {');
       const productCategoryRepositoryPath = path.resolve(tempProjectPath, 'src/repositories/product-category-repository.ts');
-      const isExistingProductCategoryRepositoryFile = existsSync(productCategoryRepositoryPath);
+      const isExistingProductCategoryRepositoryFile = fsSync.existsSync(productCategoryRepositoryPath);
       expect(isExistingProductCategoryRepositoryFile).toBeTruthy();
       const productCategoryRepositoryContent = await fs.readFile(productCategoryRepositoryPath, 'utf-8');
       expect(productCategoryRepositoryContent).toContain('export interface ProductCategoryRepository {');
     });
 
     async function _createCustomWaysJson(content: WaysJsonEntity) {
-      const isExistsTempProject = existsSync(tempProjectPath);
+      const isExistsTempProject = fsSync.existsSync(tempProjectPath);
       if (!isExistsTempProject) {
         await fs.mkdir(tempProjectPath, { recursive: true });
       }
