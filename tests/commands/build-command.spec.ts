@@ -2,6 +2,7 @@ import { existsSync } from 'node:fs';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
+import process from 'node:process';
 import { rimraf } from 'rimraf';
 import { buildCommand } from '../../src/commands/build-command';
 import { initCommand } from '../../src/commands/init-command';
@@ -171,4 +172,12 @@ describe('buildCommand', () => {
       })
     }
   });
+
+  function _getDirName() {
+    const githubWorkspace = process.env.GITHUB_WORKSPACE;
+    if (githubWorkspace) {
+      return path.resolve(githubWorkspace, 'tests/commands');
+    }
+    return __dirname;
+  }
 });
