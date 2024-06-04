@@ -1,6 +1,5 @@
 import fsSync from 'node:fs';
 import fs from 'node:fs/promises';
-import os from 'node:os';
 import path from 'node:path';
 import process from 'node:process';
 import { rimraf } from 'rimraf';
@@ -18,6 +17,7 @@ describe('buildCommand', () => {
   const dirName = _getDirName();
   const tempProjectPath = path.resolve(dirName, 'temp-project-build');
   const waysJsonPath = path.resolve(tempProjectPath, 'ways.json');
+  const originalReadFile = fs.readFile;
   let cwdSpy: jest.SpyInstance;
   let logSpy: jest.SpyInstance;
 
@@ -31,6 +31,7 @@ describe('buildCommand', () => {
       }
       return jest.requireActual('node:fs').existsSync(path);
     });
+    _getGlobalWaysJsonStub();
     await rimraf(tempProjectPath);
   });
 
@@ -53,19 +54,6 @@ describe('buildCommand', () => {
   });
 
   describe('custom templates', () => {
-    const globalWaysJsonPath = path.resolve(os.homedir(), '.ways.json');
-    const originalReadFile = fs.readFile;
-    let globalWaysJsonStub: jest.SpyInstance;
-
-    beforeEach(async () => {
-      globalWaysJsonStub = _getGlobalWaysJsonStub();
-      await rimraf(tempProjectPath);
-    });
-
-    afterEach(() => {
-      jest.restoreAllMocks();
-    });
-
     it('should build with simple custom template', async () => {
       await _createCustomWaysJson([{
         templates: ['simple-custom-template'],
@@ -170,21 +158,6 @@ describe('buildCommand', () => {
       }
       return fs.writeFile(waysJsonPath, JSON.stringify(content, null, '\t'));
     }
-
-    function _getGlobalWaysJsonStub() {
-      return jest.spyOn(fs, 'readFile').mockImplementation((filePath, ...args) => {
-        const normalizedFilePath = path.normalize(`${filePath}`);
-        const isGlobalWaysJson = /\.ways\.json$/.test(`${normalizedFilePath}`)
-        console.debug('normalizedFilePath:', normalizedFilePath);
-        console.debug('isGlobalWaysJson:', isGlobalWaysJson);
-        if (isGlobalWaysJson) {
-          return Promise.resolve(JSON.stringify({
-            templatesPath: path.resolve(dirName, '../templates'),
-          }));
-        }
-        return originalReadFile(filePath, ...args);
-      })
-    }
   });
 
   function _getDirName() {
@@ -193,5 +166,20 @@ describe('buildCommand', () => {
       return path.resolve(githubWorkspace, 'tests/commands');
     }
     return __dirname;
+  }
+
+  function _getGlobalWaysJsonStub() {
+    return jest.spyOn(fs, 'readFile').mockImplementation((filePath, ...args) => {
+      const normalizedFilePath = path.normalize(`${filePath}`);
+      const isGlobalWaysJson = /\.ways\.json$/.test(`${normalizedFilePath}`)
+      console.debug('normalizedFilePath:', normalizedFilePath);
+      console.debug('isGlobalWaysJson:', isGlobalWaysJson);
+      if (isGlobalWaysJson) {
+        return Promise.resolve(JSON.stringify({
+          templatesPath: path.resolve(dirName, '../templates'),
+        }));
+      }
+      return originalReadFile(filePath, ...args);
+    })
   }
 });
